@@ -1,0 +1,67 @@
+﻿@page "/quotes/details"
+@inject Prime.Data.ApplicationDbContext DB
+@using Prime.Entities
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Quotes</h4>
+    <hr />
+    @if (quotes is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Title</dt>
+            <dd class="col-sm-10">@quotes.Title</dd>
+            <dt class="col-sm-2">Note</dt>
+            <dd class="col-sm-10">@quotes.Note</dd>
+            <dt class="col-sm-2">Rating</dt>
+            <dd class="col-sm-10">@quotes.Rating</dd>
+            <dt class="col-sm-2">Comments</dt>
+            <dd class="col-sm-10">@quotes.Comments</dd>
+            <dt class="col-sm-2">Source</dt>
+            <dd class="col-sm-10">@quotes.Source</dd>
+            <dt class="col-sm-2">Author</dt>
+            <dd class="col-sm-10">@quotes.Author</dd>
+            <dt class="col-sm-2">ReferenceUrl</dt>
+            <dd class="col-sm-10">@quotes.ReferenceUrl</dd>
+            <dt class="col-sm-2">Tags</dt>
+            <dd class="col-sm-10">@quotes.Tags</dd>
+            <dt class="col-sm-2">Created</dt>
+            <dd class="col-sm-10">@quotes.Created</dd>
+            <dt class="col-sm-2">CreatedBy</dt>
+            <dd class="col-sm-10">@quotes.CreatedBy</dd>
+            <dt class="col-sm-2">LastModified</dt>
+            <dd class="col-sm-10">@quotes.LastModified</dd>
+            <dt class="col-sm-2">LastModifiedBy</dt>
+            <dd class="col-sm-10">@quotes.LastModifiedBy</dd>
+        </dl>
+        <div>
+            <a href="@($"/quotes/edit?id={quotes.Id}")">Edit</a> |
+            <a href="@($"/quotes")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    Quotes? quotes;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        quotes = await DB.Quotes.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (quotes is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

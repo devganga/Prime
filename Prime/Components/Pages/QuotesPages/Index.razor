@@ -1,0 +1,32 @@
+﻿@page "/quotes"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Prime.Data.ApplicationDbContext DB
+@using Prime.Entities
+
+<PageTitle>Index</PageTitle>
+<h1>Index </h1>
+
+<p>
+    <a href="quotes/create" class="btn btn-outline-success"><i class="bi bi-plus-lg"></i> Create New</a>
+</p>
+
+<QuickGrid Class="table table-striped" Items="DB.Quotes">
+    <PropertyColumn Property="quotes => quotes.Title" />
+    <PropertyColumn Property="quotes => quotes.Note" />
+    <PropertyColumn Property="quotes => quotes.Rating" />
+    <PropertyColumn Property="quotes => quotes.Comments" />
+    <PropertyColumn Property="quotes => quotes.Source" />
+    <PropertyColumn Property="quotes => quotes.Author" />
+    @*<PropertyColumn Property="quotes => quotes.ReferenceUrl" />
+    <PropertyColumn Property="quotes => quotes.Tags" />
+    <PropertyColumn Property="quotes => quotes.Created" />
+    <PropertyColumn Property="quotes => quotes.CreatedBy" />
+    <PropertyColumn Property="quotes => quotes.LastModified" />
+    <PropertyColumn Property="quotes => quotes.LastModifiedBy" /> *@
+
+    <TemplateColumn Context="quotes">
+        <a href="@($"quotes/edit?id={quotes.Id}")" class="btn btn-outline-info"><i class="bi bi-pencil"></i> Edit</a>
+        <a href="@($"quotes/details?id={quotes.Id}")" class="btn btn-outline-warning"><i class="bi bi-info-circle"></i> Details</a>
+        <a href="@($"quotes/delete?id={quotes.Id}")" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Delete</a>
+    </TemplateColumn>
+</QuickGrid>

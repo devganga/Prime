@@ -1,0 +1,20 @@
+services:
+  prime:
+    image: ${DOCKER_REGISTRY-}prime
+    build:
+      context: .
+      dockerfile: Prime/Dockerfile
+    environment:      
+      - "ConnectionStrings__DefaultConnection=Server=db;Database=PrimeDb;User=sa;Password=Your_password123;MultipleActiveResultSets=true;Encrypt=False"      
+    depends_on:
+      - "db"
+
+  db:
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+      - "SA_PASSWORD=Your_password123"
+      - "ACCEPT_EULA=Y"
+    volumes:
+      - ./data:/var/opt/mssql/data
+      - ./log:/var/opt/mssql/log
+      - ./secrets:/var/opt/mssql/secrets

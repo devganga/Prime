@@ -1,0 +1,151 @@
+﻿@page "/Cards/edit"
+@inject Prime.Data.ApplicationDbContext DB
+@using Prime.Entities
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Cards</h4>
+<hr />
+@if (Cards is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Cards" OnValidSubmit="UpdateCards" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Cards.Id" value="@Cards.Id" />
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="Cards.Name" class="form-control" />
+                    <ValidationMessage For="() => Cards.Name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="number" class="form-label">Number:</label>
+                    <InputText id="number" @bind-Value="Cards.Number" class="form-control" />
+                    <ValidationMessage For="() => Cards.Number" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="month" class="form-label">Month:</label>
+                    <InputNumber id="month" @bind-Value="Cards.Month" class="form-control" />
+                    <ValidationMessage For="() => Cards.Month" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="year" class="form-label">Year:</label>
+                    <InputNumber id="year" @bind-Value="Cards.Year" class="form-control" />
+                    <ValidationMessage For="() => Cards.Year" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="cvv" class="form-label">CVV:</label>
+                    <InputNumber id="cvv" @bind-Value="Cards.CVV" class="form-control" />
+                    <ValidationMessage For="() => Cards.CVV" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="key" class="form-label">Key:</label>
+                    <InputText id="key" @bind-Value="Cards.Key" class="form-control" />
+                    <ValidationMessage For="() => Cards.Key" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="bank" class="form-label">Bank:</label>
+                    <InputText id="bank" @bind-Value="Cards.Bank" class="form-control" />
+                    <ValidationMessage For="() => Cards.Bank" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="tagline" class="form-label">Tagline:</label>
+                    <InputText id="tagline" @bind-Value="Cards.Tagline" class="form-control" />
+                    <ValidationMessage For="() => Cards.Tagline" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="type" class="form-label">Type:</label>
+                    <InputText id="type" @bind-Value="Cards.Type" class="form-control" />
+                    <ValidationMessage For="() => Cards.Type" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes:</label>
+                    <InputText id="notes" @bind-Value="Cards.Notes" class="form-control" />
+                    <ValidationMessage For="() => Cards.Notes" class="text-danger" />
+                </div>
+               @*  <div class="mb-3">
+                    <label for="created" class="form-label">Created:</label>
+                    <InputDate id="created" @bind-Value="Cards.Created" class="form-control" />
+                    <ValidationMessage For="() => Cards.Created" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="createdby" class="form-label">CreatedBy:</label>
+                    <InputText id="createdby" @bind-Value="Cards.CreatedBy" class="form-control" />
+                    <ValidationMessage For="() => Cards.CreatedBy" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="lastmodified" class="form-label">LastModified:</label>
+                    <InputDate id="lastmodified" @bind-Value="Cards.LastModified" class="form-control" />
+                    <ValidationMessage For="() => Cards.LastModified" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="lastmodifiedby" class="form-label">LastModifiedBy:</label>
+                    <InputText id="lastmodifiedby" @bind-Value="Cards.LastModifiedBy" class="form-control" />
+                    <ValidationMessage For="() => Cards.LastModifiedBy" class="text-danger" />
+                </div> *@
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/cards">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public Cards? Cards { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cards ??= await DB.Cards.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Cards is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateCards()
+    {
+        DB.Attach(Cards!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CardsExists(Cards!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/cards");
+    }
+
+    bool CardsExists(int id)
+    {
+        return DB.Cards.Any(e => e.Id == id);
+    }
+}

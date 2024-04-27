@@ -1,0 +1,141 @@
+﻿@page "/Quotes/edit"
+@inject Prime.Data.ApplicationDbContext DB
+@using Prime.Entities
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Quotes</h4>
+<hr />
+@if (Quotes is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Quotes" OnValidSubmit="UpdateQuotes" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Quotes.Id" value="@Quotes.Id" />
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <InputText id="title" @bind-Value="Quotes.Title" class="form-control" />
+                    <ValidationMessage For="() => Quotes.Title" class="text-danger"/>
+                </div>
+                <div class="mb-3">
+                    <label for="note" class="form-label">Note:</label>
+                    <InputText id="note" @bind-Value="Quotes.Note" class="form-control" />
+                    <ValidationMessage For="() => Quotes.Note" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="rating" class="form-label">Rating:</label>
+                    <InputNumber id="rating" @bind-Value="Quotes.Rating" class="form-control" />
+                    <ValidationMessage For="() => Quotes.Rating" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="comments" class="form-label">Comments:</label>
+                    <InputText id="comments" @bind-Value="Quotes.Comments" class="form-control" />
+                    <ValidationMessage For="() => Quotes.Comments" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="source" class="form-label">Source:</label>
+                    <InputText id="source" @bind-Value="Quotes.Source" class="form-control" />
+                    <ValidationMessage For="() => Quotes.Source" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="author" class="form-label">Author:</label>
+                    <InputText id="author" @bind-Value="Quotes.Author" class="form-control" />
+                    <ValidationMessage For="() => Quotes.Author" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="referenceurl" class="form-label">ReferenceUrl:</label>
+                    <InputText id="referenceurl" @bind-Value="Quotes.ReferenceUrl" class="form-control" />
+                    <ValidationMessage For="() => Quotes.ReferenceUrl" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="tags" class="form-label">Tags:</label>
+                    <InputText id="tags" @bind-Value="Quotes.Tags" class="form-control" />
+                    <ValidationMessage For="() => Quotes.Tags" class="text-danger" />
+                </div>
+                @* <div class="mb-3">
+                    <label for="created" class="form-label">Created:</label>
+                    <InputDate id="created" @bind-Value="Quotes.Created" class="form-control" />
+                    <ValidationMessage For="() => Quotes.Created" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="createdby" class="form-label">CreatedBy:</label>
+                    <InputText id="createdby" @bind-Value="Quotes.CreatedBy" class="form-control" />
+                    <ValidationMessage For="() => Quotes.CreatedBy" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="lastmodified" class="form-label">LastModified:</label>
+                    <InputDate id="lastmodified" @bind-Value="Quotes.LastModified" class="form-control" />
+                    <ValidationMessage For="() => Quotes.LastModified" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="lastmodifiedby" class="form-label">LastModifiedBy:</label>
+                    <InputText id="lastmodifiedby" @bind-Value="Quotes.LastModifiedBy" class="form-control" />
+                    <ValidationMessage For="() => Quotes.LastModifiedBy" class="text-danger" />
+                </div> *@
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/quotes">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public Quotes? Quotes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Quotes ??= await DB.Quotes.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Quotes is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateQuotes()
+    {
+        DB.Attach(Quotes!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!QuotesExists(Quotes!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/quotes");
+    }
+
+    bool QuotesExists(int id)
+    {
+        return DB.Quotes.Any(e => e.Id == id);
+    }
+}

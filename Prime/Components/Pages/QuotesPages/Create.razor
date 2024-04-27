@@ -1,0 +1,98 @@
+﻿@page "/quotes/create"
+@inject Prime.Data.ApplicationDbContext DB
+@using Prime.Entities
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Quotes</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Quotes" OnValidSubmit="AddQuotes" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label>
+                <InputText id="title" @bind-Value="Quotes.Title" class="form-control" />
+                <ValidationMessage For="() => Quotes.Title" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="note" class="form-label">Note:</label>
+                <InputTextArea id="note" @bind-Value="Quotes.Note" class="form-control" />
+                <ValidationMessage For="() => Quotes.Note" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="rating" class="form-label">Rating:</label>
+                <InputNumber id="rating" @bind-Value="Quotes.Rating" class="form-control" />
+                <ValidationMessage For="() => Quotes.Rating" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="comments" class="form-label">Comments:</label>
+                <InputText id="comments" @bind-Value="Quotes.Comments" class="form-control" />
+                <ValidationMessage For="() => Quotes.Comments" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="source" class="form-label">Source:</label>
+                <InputText id="source" @bind-Value="Quotes.Source" class="form-control" />
+                <ValidationMessage For="() => Quotes.Source" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="author" class="form-label">Author:</label>
+                <InputText id="author" @bind-Value="Quotes.Author" class="form-control" />
+                <ValidationMessage For="() => Quotes.Author" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="referenceurl" class="form-label">ReferenceUrl:</label>
+                <InputText id="referenceurl" @bind-Value="Quotes.ReferenceUrl" class="form-control" />
+                <ValidationMessage For="() => Quotes.ReferenceUrl" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="tags" class="form-label">Tags:</label>
+                <InputText id="tags" @bind-Value="Quotes.Tags" class="form-control" />
+                <ValidationMessage For="() => Quotes.Tags" class="text-danger" />
+            </div>
+            @*  <div class="mb-3">
+            <label for="created" class="form-label">Created:</label>
+            <InputDate id="created" @bind-Value="Quotes.Created" class="form-control" />
+            <ValidationMessage For="() => Quotes.Created" class="text-danger" />
+            </div>
+            <div class="mb-3">
+            <label for="createdby" class="form-label">CreatedBy:</label>
+            <InputText id="createdby" @bind-Value="Quotes.CreatedBy" class="form-control" />
+            <ValidationMessage For="() => Quotes.CreatedBy" class="text-danger" />
+            </div>
+            <div class="mb-3">
+            <label for="lastmodified" class="form-label">LastModified:</label>
+            <InputDate id="lastmodified" @bind-Value="Quotes.LastModified" class="form-control" />
+            <ValidationMessage For="() => Quotes.LastModified" class="text-danger" />
+            </div>
+            <div class="mb-3">
+            <label for="lastmodifiedby" class="form-label">LastModifiedBy:</label>
+            <InputText id="lastmodifiedby" @bind-Value="Quotes.LastModifiedBy" class="form-control" />
+            <ValidationMessage For="() => Quotes.LastModifiedBy" class="text-danger" />
+            </div>   *@
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/quotes">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public Quotes Quotes { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddQuotes()
+    {
+        DB.Quotes.Add(Quotes);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/quotes");
+    }
+}

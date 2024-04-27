@@ -1,0 +1,31 @@
+﻿@page "/cards"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Prime.Data.ApplicationDbContext DB
+@using Prime.Entities
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>    
+    <a href="cards/create" class="btn btn-outline-success"><i class="bi bi-plus-lg"></i> Create New</a>
+</p>
+
+<QuickGrid Class="table table-striped" Items="DB.Cards">
+    <PropertyColumn Property="cards => cards.Name" />
+    <PropertyColumn Property="cards => cards.Number" />
+   @*  <PropertyColumn Property="cards => cards.Month" />
+    <PropertyColumn Property="cards => cards.Year" />
+    <PropertyColumn Property="cards => cards.CVV" /> *@
+    <PropertyColumn Property="cards => cards.Key" />
+    <PropertyColumn Property="cards => cards.Bank" />
+@*     <PropertyColumn Property="cards => cards.Tagline" />
+    <PropertyColumn Property="cards => cards.Type" />
+    <PropertyColumn Property="cards => cards.Notes" /> *@
+
+    <TemplateColumn Context="cards">       
+        <a href="@($"cards/edit?id={cards.Id}")" class="btn btn-outline-info"><i class="bi bi-pencil"></i> Edit</a>
+        <a href="@($"cards/details?id={cards.Id}")" class="btn btn-outline-warning"><i class="bi bi-info-circle"></i> Details</a>
+        <a href="@($"cards/delete?id={cards.Id}")" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Delete</a>
+    </TemplateColumn>
+</QuickGrid>
